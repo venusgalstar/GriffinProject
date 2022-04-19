@@ -4,10 +4,11 @@ pragma solidity 0.8.7;
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LotteryNFT is ERC721, Ownable {
+contract LotteryNFT is ERC721Enumerable, Ownable {
     using Strings for uint256;
     using Counters for Counters.Counter;
 
@@ -22,7 +23,6 @@ contract LotteryNFT is ERC721, Ownable {
     Counters.Counter private _tokenCounter;
     
     string private _baseURIExtended;
-    string private nftURI;
 
     /**
     * @dev Throws if called by any account other than the multi-signer.
@@ -36,34 +36,38 @@ contract LotteryNFT is ERC721, Ownable {
         _baseURIExtended = "https://ipfs.infura.io/";
     }
 
-    function getURI() external view returns(string memory){
-        return nftURI;
-    }
-
-    function setURI(string memory _nftURI) external onlyMultiSignWallet{
-        nftURI = _nftURI;
-        emit SetURI(msg.sender, _nftURI);
-    }
-
    /**
     * @dev Mint masterNFT For Free
     */
-    function mint(address sender) external returns(uint256){
+    function mint(address sender) external onlyMultiSignWallet returns(uint256){
         // Test _tokenCounter
         require(_tokenCounter.current() <= MAX_NFT_SUPPLY, "exceed maximum supply");
 
-        // Incrementing ID to create new token        
+        // Incrementing ID to create new token
         uint256 newID = _tokenCounter.current();
         _tokenCounter.increment();
 
-        _safeMint(sender, newID);    
+        _safeMint(sender, newID);
         return newID;
+    }
+
+    /**
+     * @dev Burns `tokenId`. See {ERC721-_burn}.
+     *
+     * Requirements:
+     *
+     * - The caller must own `tokenId` or be an approved operator.
+     */
+    function burn(uint256 tokenId) public virtual {
+        //solhint-disable-next-line max-line-length
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
+        _burn(tokenId);
     }
 
     /**
      * @dev Return the base URI
      */
-     function _baseURI() internal override view returns (string memory) {
+    function _baseURI() internal override view returns (string memory) {
         return _baseURIExtended;
     }
 

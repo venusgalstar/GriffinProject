@@ -10,12 +10,12 @@ var express = require('express');
 var cors = require('cors');
 const bodyparser = require('body-parser');
 
-
 // init web3
 var web3 = new Web3(new Web3.providers.HttpProvider(config.RPC_URL2));
 var signer = web3.eth.accounts.privateKeyToAccount(config.PRIVATE_KEY);
 var LotteryContract = new web3.eth.Contract(lotteryAbi, config.LOTTERY_ADDRESS);
 var RewardContract = new web3.eth.Contract(rewardAbi, config.REWARD_ADDRESS);
+
 var DB = new mysql({
     host: config.HOST,
     user: config.USER,
@@ -23,17 +23,13 @@ var DB = new mysql({
     database: config.DATABASE
 });
 
-
 var txHash = null;
-
 
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
 const sendTx = async (account, tx, gasPrice, value) => {
-
     var gas = 2100000;
     const data = tx.encodeABI();
     var nonce = await web3.eth.getTransactionCount(account.address);
@@ -111,7 +107,6 @@ const syncWalletAndClaim = async () => {
                 DB.query(queryStr);
             }
         }
-
         await claimWallet();
     } catch (e) {
         console.log("sync wallet error:", e);
@@ -119,7 +114,6 @@ const syncWalletAndClaim = async () => {
         setTimeout(syncWalletAndClaim, 10000);
     }
 }
-
 
 const claimWallet = async (force = false) => {
 
@@ -244,7 +238,6 @@ const syncNftStatus = async () => {
 
 const syncLotteryCount = async () => {
     try {
-
         var lotteryCount = await LotteryContract.methods._lotteryCount().call();
         var result = DB.query("SELECT IFNULL(MAX(lottery_count), 0) AS cnt FROM winners");
         var cnt = result[0].cnt;
