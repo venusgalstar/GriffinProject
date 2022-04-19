@@ -1,0 +1,30 @@
+.myNFTPage {
+    min-height:800px;
+    background-color: var(--color-black);
+    background-image: url('/src/assets/griffin-header-bg.jpg');
+    background-position: bottom center;
+    background-size: cover;
+    padding-bottom: 400px;
+}
+.myNFTHolder {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 140px;
+    max-width: 90%;
+    margin: 0 auto;
+    color:white;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size:22px;
+    line-height: 30px;
+}
+
+.mynfts {
+    margin-bottom: 100px;
+}
+
+.mynfts h1 {
+    font-family: 'MedievalSharp', sans-serif;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 80px;
+}
