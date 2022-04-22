@@ -3,20 +3,18 @@
     "USER"     : "root",
     "PASSWORD" : "",
     "DATABASE" : "lottery",
-    "PORT": 4000,
-    "RPC_URL": "https://speedy-nodes-nyc.moralis.io/402429510dc9e6547a785583/eth/ropsten",
-    "RPC_URL1": "https://ropsten.infura.io/v3/1b4c44fdf5a0404b91ee1a85db0aed9a",
-    "RPC_URL2": "https://api.avax-test.network/ext/bc/C/rpc",
-    "LOTTERY_ADDRESS": "0x89436B411E7D828fe7A56583089aD3bE477A73BE",
+    "PORT": 9000,
+    "RPC_URL": "https://api.avax-test.network/ext/bc/C/rpc",
+    "LOTTERY_ADDRESS": "0x44B147fDB5404198Ea1513bFa2B195cDe3F4b06A",
     "REWARD_ADDRESS": "0xB3cDf9482B7aFaEF502DD9cF84f5e9F3AbC2A723",
     "CLAIM_PERIOD_DAY": 1, 
     "LOTTERY_PERIOD_DAY": 1,
     "CANDIDATE_NUM": 5,
-    "START_NFT_COUNT": 12,
+    "START_NFT_COUNT": 6,
     
     "PRIVATE_KEY": "0x01c39bf0fc81c8c6719105e786eedf29f4fd8d06647ddcc2e54ce977230cf0a6",    
     "DURATION": 64800,
     "SCAN_NFT_INTERVAL": 2,
-    "SERVER_PORT": 8000
+    "SERVER_PORT": 9000
 }
 

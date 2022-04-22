@@ -30,7 +30,10 @@
     background: #3d3d3d;
     padding: 20px;
     margin-bottom: 30px;
+    grid-gap: 30px;
     gap: 30px;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 .winnerNum {
     color: #b5722d;
@@ -77,5 +80,7 @@
 }
 .winInfo {
     padding: 5px;
+    min-height: 255px;
+    text-align: center;
 }
 }

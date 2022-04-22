@@ -1,10 +1,10 @@
 .app__header {
     background-color: var(--color-black);
-    background-image: url('/src/assets/griffin-header-bg.jpg');
+    background-image: url('/src/assets/griffin-footer-bg.jpg');
     background-position: bottom center;
     background-size: cover;
+    background-attachment: fixed;
 }
-
 .app__header-h1 {
     font-family: var(--font-base);
     color: var(--color-golden);
@@ -52,6 +52,47 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+/* flying griffins */
+
+.firstFly {
+    position: absolute;
+    left: 14%;
+    bottom: -200px;
+}
+.firstFly img {
+    max-width: 105px;
+}
+.secondFly {
+    position: absolute;
+    right: 14%;
+    filter: blur(2px);
+    bottom: -140px;
+}
+.secondFly img {
+    max-width: 530px;
+}
+.thirdFly {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+.fourthFly {
+    position: absolute;
+    right: 14%;
+    bottom: 224px;
+}
+.fourthFly img {
+    max-width: 329px;
+    transform: rotate(340deg) !important;
+}
+
+
+
 .bounce {
     /* animation: bounce 2s infinite; */
     animation: bounce 2s;
@@ -82,6 +123,9 @@
     .app__header-h1 {
         font-size: 90px;
     }
+    .thirdFly {
+        display:none;
+    }
 }
 
 @media screen and (max-width: 650px) {
@@ -95,6 +139,18 @@
     .headerSubheading {
         font-size: 27px;
     }
+    .secondFly {
+        right: 0%;
+        text-align: center;
+    }
+    .secondFly img {
+        max-width: 85%;
+    }
+    .app__aboutus-content_about.griffinNfts a {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        margin-left: 0;
+    }
 }
 
 @media screen and (max-width: 450px) {
@@ -103,3 +159,11 @@
         line-height: 70px;
     }
 }
+
+
+/* fix background-attachment on iOS devices */
+@media (hover: none) {
+    .app__header {
+        background-attachment: initial;
+    }
+ }

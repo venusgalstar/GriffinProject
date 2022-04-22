@@ -26,13 +26,13 @@ const Faq = () => (
       <details>
         <summary>What is a Phoenix Nest?</summary>
         <div className="faq__content">
-          <p>A Nest is a term used to describe an initial deposit holding. When you create a Nest, you are depositing funds to the treasury to be used for the project&apos;s investments.</p>
+        <p>A Nest is a term used to describe an initial deposit holding. When you create a Nest, you are depositing funds to the treasury to be used for the project&apos;s investments.</p>
         </div>
       </details>
       <details>
         <summary>Why is $FIRE on the Avalanche Chain?</summary>
         <div className="faq__content">
-          <p>Our goal is to bring DeFi into the average household. Ethereum&apos;s high gas fees make it impossible for most people to access the Ethereum network. bWe want $FIRE to be accessible to everyone, including smallholders, so we chose to be on the Avalanche Chain. However, this does not prevent us from taking advantage of DeFi yield protocols on Ethereum.</p>
+          <p>Our goal is to bring DeFi into the average household. Ethereum&apos;s high gas fees make it impossible for most people to access the Ethereum network. We want $FIRE to be accessible to everyone, including smallholders, so we chose to be on the Avalanche Chain. However, this does not prevent us from taking advantage of DeFi yield protocols on Ethereum.</p>
         </div>
       </details>
       <details>
@@ -44,7 +44,7 @@ const Faq = () => (
       <details>
         <summary>Is Griffin Kingdom affiliated with Phoenix Community Capital (PCC)?</summary>
         <div className="faq__content">
-          <p>Yes! PCC and Griffin Kingdom are partnered together on this project to provide an outstanding NFT and giveaway system. PCC is the manager of the Griffin Kingdom treasury. </p>
+          <p>Yes! PCC and Griffin Kingdom are partnered together on this project to provide an outstanding NFT and giveaway system. PCC is the manager of the Griffin Kingdom treasury.</p>
         </div>
       </details>
     </div>
@@ -55,11 +55,7 @@ const Faq = () => (
       <details>
         <summary>What is the breakdown of the mint profits?</summary>
         <div className="faq__content">
-          <p>100% of the profits go towards creating Phoenix Nests and Phoenix NFTs (Master NFT and Grandmaster NFT).<br />
-            The distribution of Nest rewards is as follows,<br />
-            50% of rewards go to winners.<br />
-            25% of rewards go to compounding.<br />
-            25% of rewards go-to team wallet (used to pay staff and developers).<br />
+          <p>Revenue from the sale of NFTs will be paid back to PCC for the allocation of the 1300 Nests. The leftover amount will be used to pay for the Certik Audit and operating expenses.<br />
           </p>
         </div>
       </details>
@@ -78,18 +74,18 @@ const Faq = () => (
       <details>
         <summary>Why does Minting cost increase per tier?</summary>
         <div className="faq__content">
-          <p>The pricing structure was designed to give early adopters an initial discount. The prices are set to ensure we can Air Drop more rewards as each tier progresses. This is for the benefit of the holders of Griffin Kingdom NFTs.</p>
+          <p>The pricing structure was designed to give early adopters an initial discount. The prices are set to ensure we can Air Drop more rewards as each tier progresses. This is for the benefit of the members of Griffin Kingdom.</p>
         </div>
       </details>
       <details>
         <summary>What changes with each tier?</summary>
         <div className="faq__content">
-          <p>When a tier changes, the price of the NFTs increases. There are no other changes, and we will still be giving away 50% of the rewards from Nests. <br />
-          Whitelist cost (Tier 1) - 2 AVA<br />
-          Tier 2 - 3 AVAX<br />
-          Tier 3 - 3.5 AVAX<br />
-          Tier 4 - 4 AVAX<br />
-          Tier 5 - 4.5 AVAX
+          <p>When a tier changes, the price of the NFTs increases, the giveaway cap, and the number of winners per week increases per tier. <br />
+          - Tier 1 @ 20% Sold: 5 Nests/Week up to 260 Nests<br />
+          - Tier 2 @ 40% Sold: 10 Nests/Week up to 520 Nests<br />
+          - Tier 3 @ 60% Sold: 15 Nests/Week up to 780 Nests<br />
+          - Tier 4 @ 80% Sold: 20 Nests/Week up to 1040 Nests<br />
+          - Tier 5 @ 100% Sold: 25 Nests/Week up to 1300 Nests
           </p>
         </div>
       </details>
@@ -101,7 +97,7 @@ const Faq = () => (
       <details>
         <summary>How will the Air Drops work?</summary>
         <div className="faq__content">
-          <p>PCC will AirDrop Nests directly into wallets. e.g., like that have done with the 5000 Nests they AirDropped on April 1<sup>st</sup>.</p>
+          <p>PCC will AirDrop Nests directly into wallets. e.g., like that have done with the 5000 Nests they AirDropped on April 1<sup>st.</sup></p>
         </div>
       </details>
       <details>
@@ -158,6 +154,58 @@ const Faq = () => (
             <p>No, every Griffin Kingdom NFT has an equal opportunity to win an AirDrop regardless of their faction. Factions are created equally and do not affect win rates. Factions are only for entertainment purposes to keep NFT holders engaged.</p>
         </div>
         </details>
+    </div>
+
+{/* NEST CAP */}
+    <h3 className="faqSubhead">Nest Cap</h3>
+    <div className="faqHolder">
+      <details>
+        <summary>What is the Public Nest Cap?</summary>
+        <div className="faq__content">
+          <p>The Public Nest cap is the maximum number of Nests apart from the amount allocated to The Griffin Kingdom and other PCC incubators.</p>
+        </div>
+      </details>
+      <details>
+        <summary>What happens when Public Nest Cap?</summary>
+        <div className="faq__content">
+          <p>Upon reaching the Public Nest Cap, the remainder of Nest reserved for the Griffin Kingdom will be decided up to a set amount weekly to create sustainable Nest Airdrops for at least a year!</p>
+        </div>
+      </details>
+      <details>
+        <summary>How does Nest Cap affect this project?</summary>
+        <div className="faq__content">
+          <p>It does not affect the longevity of this project. This project was designed for sustainability for at least one year of AirDropping Nests after the Public Cap.</p>
+        </div>
+      </details>
+    </div>
+
+{/* SUSTAINABILITY */}
+<h3 className="faqSubhead">Sustainability</h3>
+    <div className="faqHolder">
+      <details>
+        <summary>How much is reserved for Griffin Kingdom?</summary>
+        <div className="faq__content">
+          <p>Phoenix Community has reserved 1,300 $FIRE Nests for The Griffin Kingdom!</p>
+        </div>
+      </details>
+      <details>
+        <summary>Why are you limiting the rewards per tier?</summary>
+        <div className="faq__content">
+          <p>We are limiting rewards to create sustainability; this should allow the project to last for at least one and a half years AirDropping Nests.</p>
+        </div>
+      </details>
+      <details>
+        <summary>What happens if people are no longer minting NFTs?</summary>
+        <div className="faq__content">
+          <p>If people are no longer minting NFTs we will continue to giveaways Nests up to the tier cap. This cap is set at 260 total Nests per tier. After this cap is reached, we will raise the cap per the number of NFTs sold in between the current tiers.</p>
+        </div>
+      </details>
+      <details>
+        <summary>What are the benefits of being a Griffin Kingdom NFT member after the last Nest is Air Dropped?</summary>
+        <div className="faq__content">
+          <p>We are working with PCC to come up with future projects and solutions to benefit all the Griffin Kingdom NFTs members.</p>
+        </div>
+      </details>
     </div>
   </div>
 );
