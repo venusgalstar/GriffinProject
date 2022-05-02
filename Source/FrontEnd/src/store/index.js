@@ -37,7 +37,7 @@ const reducer = (state, action) => {
         return state;
       }
       try {
-        lottery.methods.getNFTBundlePrice(action.payload.amount).call()
+        lottery.methods.getNFTBundlePriceByUser(state.account, action.payload.amount).call()
           .then((price) => {
             lottery.methods.buyLotteryNFT(action.payload.amount)
               .send({ from: state.account, value: price })
@@ -173,7 +173,7 @@ const getGlobalInfo = async () => {
     }
     var lastLotteryTime = await gLottery.methods._lastLottery().call();
     var nftBaseUrl = await gNft.methods.getBaseURI().call();
-    // var nftBaseUrl = "https://ipfs.infura.io/ipfs/QmR8Fs5zseYYVhvVFjNS7EJQrNHwcs3UpswpC1QonWXZMn/";
+    // // var nftBaseUrl = "https://ipfs.infura.io/ipfs/QmR8Fs5zseYYVhvVFjNS7EJQrNHwcs3UpswpC1QonWXZMn/";
     store.dispatch({ type: 'RETURN_DATA', payload: { totalNft, nftPrice, tierCount, winners, lastLotteryTime, nftBaseUrl } });
   } catch (e) {
     console.log("error in get global info!");

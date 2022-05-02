@@ -14,9 +14,9 @@
 	},
 	{
 		"inputs": [],
-		"name": "changeTier",
+		"name": "payAllLotteryFee",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -50,6 +50,13 @@
 		"type": "event"
 	},
 	{
+		"inputs": [],
+		"name": "changeTier",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -66,37 +73,6 @@
 			}
 		],
 		"name": "ChangeTier",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "TYPE",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "walletCount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "nestCount",
-				"type": "uint256"
-			}
-		],
-		"name": "CreateNest",
 		"type": "event"
 	},
 	{
@@ -138,8 +114,33 @@
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "payLotteryFee",
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "nCount",
+				"type": "uint256"
+			}
+		],
+		"name": "PayAllLotteryFee",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "payTokenLotteryFee",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -156,11 +157,17 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
 				"name": "nCount",
 				"type": "uint256"
 			}
 		],
-		"name": "PayLotteryFee",
+		"name": "PayTokenLotteryFee",
 		"type": "event"
 	},
 	{
@@ -181,6 +188,19 @@
 		],
 		"name": "Received",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "list",
+				"type": "address[]"
+			}
+		],
+		"name": "removeFromWhiteList",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -284,49 +304,6 @@
 		],
 		"name": "SetLotteryFee",
 		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "winnerFee",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "teamFee",
-				"type": "uint256"
-			}
-		],
-		"name": "SetLotteryFee",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "winnerFee",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "teamFee",
-				"type": "uint256"
-			}
-		],
-		"name": "setLoyaltyFee",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -504,11 +481,16 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "splitRate",
+				"name": "winnerFee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "teamFee",
 				"type": "uint256"
 			}
 		],
-		"name": "setSplitRate",
+		"name": "setRoyaltyFee",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -525,11 +507,17 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "splitRate",
+				"name": "winnerFee",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "teamFee",
 				"type": "uint256"
 			}
 		],
-		"name": "SetSplitRate",
+		"name": "SetRoyaltyFee",
 		"type": "event"
 	},
 	{
@@ -562,38 +550,6 @@
 			}
 		],
 		"name": "SetTeamWallet",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "fee",
-				"type": "uint256"
-			}
-		],
-		"name": "setTeamWalletFee",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "fee",
-				"type": "uint256"
-			}
-		],
-		"name": "SetTeamWalletFee",
 		"type": "event"
 	},
 	{
@@ -675,6 +631,121 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address[]",
+				"name": "list",
+				"type": "address[]"
+			}
+		],
+		"name": "setWhiteList",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "limit",
+				"type": "uint256"
+			}
+		],
+		"name": "setWhiteListLimit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "setWhiteListPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "winner1",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "winner2",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "winner3",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "winner4",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "winner5",
+				"type": "uint256"
+			}
+		],
+		"name": "setWinnerCountPerTier",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "winner1",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "winner2",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "winner3",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "winner4",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "winner5",
+				"type": "uint256"
+			}
+		],
+		"name": "SetWinnerCountPerTier",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "lotteryIndex",
 				"type": "uint256"
@@ -738,7 +809,7 @@
 		"inputs": [],
 		"name": "startLottery",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -897,6 +968,70 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "_whiteList",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "_whiteListCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "_whiteListLimit",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "_whiteListPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "owner",
 				"type": "address"
 			}
@@ -993,6 +1128,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "getCurrentTime",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "getLotteryFee",
 		"outputs": [
 			{
@@ -1049,7 +1197,56 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "nCount",
+				"type": "uint256"
+			}
+		],
+		"name": "getNFTBundlePrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "nCount",
+				"type": "uint256"
+			}
+		],
+		"name": "getNFTBundlePriceByUser",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "nftCount",
+				"type": "uint256"
+			}
+		],
 		"name": "getNFTPrice",
 		"outputs": [
 			{
@@ -1076,38 +1273,12 @@
 	},
 	{
 		"inputs": [],
-		"name": "getSplitRate",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "getTeamWallet",
 		"outputs": [
 			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getTeamWalletFee",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -1135,6 +1306,58 @@
 	{
 		"inputs": [],
 		"name": "getTierCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "getWhiteListCountPerUser",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getWinnerCountPerTier",
 		"outputs": [
 			{
 				"internalType": "uint256",
