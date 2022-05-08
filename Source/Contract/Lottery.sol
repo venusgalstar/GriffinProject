@@ -58,7 +58,7 @@ contract Lottery is Ownable {
     uint256 _unit                       = 10**18;
     uint256 _teamRoyalty                = 500;
     uint256 _winnerRoyalty              = 500;
-    uint256 _nextTierLevel              = 0;
+    uint256 public _nextTierLevel              = 0;
     uint256 _minRepeatCount             = 4;
     uint256[2] public _avaxBalance;
     uint256[2] public _walletBalance;
@@ -71,10 +71,12 @@ contract Lottery is Ownable {
     uint256 nounce                      = 0;
     uint256 spanSize                    = 100;
     uint256 consideringSpanIndex        = 0;
-    mapping(address => bool) public _whiteList;
+    mapping(address => bool)    public _whiteList;
     uint256 public _whiteListPrice;
     uint256 public _whiteListLimit      = 10;
     mapping(address => uint256) public _whiteListCount;
+    mapping(address => uint256) public _buyHistory;
+    uint256 public _buyLimit            = 100;
 
 
 
@@ -140,11 +142,15 @@ contract Lottery is Ownable {
     }
 
     function getPresailCountByUser(address user, uint256 nCount) internal view returns(uint256) {
-        uint256 wCount = 0;
-        if (_whiteList[user] && _whiteListCount[user] <= _whiteListLimit) {
-            wCount = min(_whiteListLimit - _whiteListCount[user], nCount);
+        if (getTier(_totalNFT) == 1) {
+            uint256 wCount = 0;
+            if (_whiteList[user] && _whiteListCount[user] <= _whiteListLimit) {
+                wCount = min(_whiteListLimit - _whiteListCount[user], nCount);
+            }
+            return wCount;
+        } else {
+            return 0;
         }
-        return wCount;
     }
 
     function getNFTBundlePriceByUser(address user, uint256 nCount ) public view returns(uint256) {
@@ -165,10 +171,20 @@ contract Lottery is Ownable {
 
     function buyLotteryNFT(uint256 nCount) external payable {
         // uint256 nftPrice = getNFTBundlePrice(nCount);
+        uint256 wCount = getPresailCountByUser(msg.sender, nCount);
+
+        if (getTier(_totalNFT) == 1) {
+            require(_whiteList[msg.sender], "not a whitelist member");
+            require(wCount == nCount, 
+                    "exceed maximum buy count for whitelist member");
+            require(wCount + _totalNFT <= _tierCount[0], "exceed maximum nft count of tier 1");
+        }
+        require (_buyHistory[msg.sender] + nCount <= _buyLimit, "exceed maximum buy count");
+        
         uint256 nftPrice = getNFTBundlePriceByUser(msg.sender, nCount);
         require(msg.value >= nftPrice, "insufficient funds");
         require(nCount <= MAX_ORDER_COUNT, "exceed maximum order count");
-        require(_totalNFT+nCount <= _tierCount[4], "exceed maximum NFT count");
+        require(_totalNFT + nCount <= _tierCount[4], "exceed maximum NFT count");
         
         // send to team wallet
         uint256 val = nftPrice * _teamRoyalty / 1000;
@@ -188,13 +204,14 @@ contract Lottery is Ownable {
             tokenId = _lotteryNFT.mint(msg.sender, randomIndex());
             _createTime[tokenId] = block.timestamp;
         }
-        if(_totalNFT+nCount >= _tierCount[_nextTierLevel]) {
+        if(_totalNFT + nCount >= _tierCount[_nextTierLevel]) {
             changeTier();
         }
-        _totalNFT+=nCount;
+        _totalNFT += nCount;
         if (_whiteList[msg.sender]) {
             _whiteListCount[msg.sender] += getPresailCountByUser(msg.sender, nCount);
         }
+        _buyHistory[msg.sender] += nCount;
         emit BuyNFT(msg.sender, nCount);
     }
 
@@ -323,11 +340,11 @@ contract Lottery is Ownable {
     }
 
     function getTier(uint256 nftCount) public view returns(uint256) {
-        if(nftCount <= _tierCount[0]) return 1;
-        if(nftCount <= _tierCount[1]) return 2;
-        if(nftCount <= _tierCount[2]) return 3;
-        if(nftCount <= _tierCount[3]) return 4;
-        if(nftCount <= _tierCount[4]) return 5;
+        if(nftCount < _tierCount[0]) return 1;
+        if(nftCount < _tierCount[1]) return 2;
+        if(nftCount < _tierCount[2]) return 3;
+        if(nftCount < _tierCount[3]) return 4;
+        if(nftCount < _tierCount[4]) return 5;
         return 6;
     }
 
@@ -503,6 +520,10 @@ contract Lottery is Ownable {
 
     function getWhiteListCountPerUser(address user) external view returns(uint256) {
         return _whiteListCount[user];
+    }
+
+    function setBuyLimit(uint256 limit) external onlyMultiSignWallet disablePause {
+        _buyLimit = limit;
     }
 
 }
