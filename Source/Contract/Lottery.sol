@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import "./LotteryNFT.sol";
 
@@ -77,6 +78,7 @@ contract Lottery is Ownable {
     mapping(address => uint256) public _whiteListCount;
     mapping(address => uint256) public _buyHistory;
     uint256 public _buyLimit            = 100;
+    address public _fireBird;
 
 
 
@@ -144,7 +146,7 @@ contract Lottery is Ownable {
     function getPresailCountByUser(address user, uint256 nCount) internal view returns(uint256) {
         if (getTier(_totalNFT) == 1) {
             uint256 wCount = 0;
-            if (_whiteList[user] && _whiteListCount[user] <= _whiteListLimit) {
+            if ((_whiteList[user] || IERC721(_fireBird).balanceOf(user) > 0) && _whiteListCount[user] <= _whiteListLimit) {
                 wCount = min(_whiteListLimit - _whiteListCount[user], nCount);
             }
             return wCount;
@@ -178,6 +180,9 @@ contract Lottery is Ownable {
             require(wCount == nCount, 
                     "exceed maximum buy count for whitelist member");
             require(wCount + _totalNFT <= _tierCount[0], "exceed maximum nft count of tier 1");
+            if (IERC721(_fireBird).balanceOf(msg.sender) > 0 ) {
+                _whiteList[msg.sender]  = true;
+            }
         }
         require (_buyHistory[msg.sender] + nCount <= _buyLimit, "exceed maximum buy count");
         
@@ -186,6 +191,7 @@ contract Lottery is Ownable {
         require(nCount <= MAX_ORDER_COUNT, "exceed maximum order count");
         require(_totalNFT + nCount <= _tierCount[4], "exceed maximum NFT count");
         
+      
         // send to team wallet
         uint256 val = nftPrice * _teamRoyalty / 1000;
         if(val > 0) {
@@ -524,6 +530,10 @@ contract Lottery is Ownable {
 
     function setBuyLimit(uint256 limit) external onlyMultiSignWallet disablePause {
         _buyLimit = limit;
+    }
+
+    function setWhiteListNft(address nftAddress)  external onlyMultiSignWallet disablePause {
+        _fireBird = nftAddress;
     }
 
 }

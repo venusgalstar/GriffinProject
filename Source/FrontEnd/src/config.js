@@ -17,9 +17,9 @@ var config = {
     'test': {
         rpc: "https://api.avax-test.network/ext/bc/C/rpc",
         chainId: 0xa869,
-        lotteryAddr: "0xA32782f6162a7d21B60E79C2F7b0629bF43b273e",
+        lotteryAddr: "0xCC90e647b056a0f9e2f291E2C48224169D67E61A",
         rewardAddr: "0xa88CF98a3461e03d27e46e0D31d326ee0D755097",
-        nftAddr: "0x672aF5E00B30de8f9715f29EfBA2d35d490f7Aaf",
+        nftAddr: "0x7D194c4461275D39224B34bb2a23710293FD7397",
     },
     api: 'http://localhost:9000/api',
     rewardAbi: rewardAbi,
