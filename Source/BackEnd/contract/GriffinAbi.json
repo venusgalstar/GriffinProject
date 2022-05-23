@@ -3,12 +3,31 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "lotteryNFTAddress",
+				"name": "griffinNFTAddress",
 				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "nCount",
+				"type": "uint256"
+			}
+		],
+		"name": "AllGriffinFee",
+		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -98,50 +117,6 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "nCount",
-				"type": "uint256"
-			}
-		],
-		"name": "PayAllLotteryFee",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "nCount",
-				"type": "uint256"
-			}
-		],
-		"name": "PayTokenLotteryFee",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
 				"name": "value",
 				"type": "uint256"
 			}
@@ -199,11 +174,11 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "lotteryFee",
+				"name": "griffinFee",
 				"type": "uint256"
 			}
 		],
-		"name": "SetLotteryFee",
+		"name": "SetGriffinFee",
 		"type": "event"
 	},
 	{
@@ -456,6 +431,31 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "nCount",
+				"type": "uint256"
+			}
+		],
+		"name": "TokenGriffinFee",
+		"type": "event"
+	},
+	{
 		"stateMutability": "payable",
 		"type": "fallback"
 	},
@@ -525,7 +525,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "_lastLottery",
+		"name": "_griffinCount",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -538,7 +538,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "_lotteryCount",
+		"name": "_griffinRewards",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -551,7 +551,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "_lotteryRewards",
+		"name": "_lastGriffin",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -679,7 +679,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "buyLotteryNFT",
+		"name": "buyGriffinNFT",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -714,7 +714,7 @@
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct Lottery.NFTInfo[]",
+				"internalType": "struct griffin.NFTInfo[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -768,7 +768,7 @@
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct Lottery.CandidateInfo[]",
+				"internalType": "struct griffin.CandidateInfo[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -804,7 +804,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "getLotteryFee",
+		"name": "getGriffinFee",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -1068,7 +1068,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "lotteryIndex",
+				"name": "griffinIndex",
 				"type": "uint256"
 			}
 		],
@@ -1087,7 +1087,7 @@
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct Lottery.WinnerInfo[]",
+				"internalType": "struct griffin.WinnerInfo[]",
 				"name": "winners",
 				"type": "tuple[]"
 			}
@@ -1110,7 +1110,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "payAllLotteryFee",
+		"name": "payAllGriffinFee",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -1123,7 +1123,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "payTokenLotteryFee",
+		"name": "payTokenGriffinFee",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -1191,11 +1191,11 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "lotteryFee",
+				"name": "griffinFee",
 				"type": "uint256"
 			}
 		],
-		"name": "setLotteryFee",
+		"name": "setGriffinFee",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1438,7 +1438,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "lotteryIndex",
+				"name": "griffinIndex",
 				"type": "uint256"
 			},
 			{
@@ -1454,7 +1454,7 @@
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct Lottery.WinnerInfo[]",
+				"internalType": "struct griffin.WinnerInfo[]",
 				"name": "winners",
 				"type": "tuple[]"
 			}
@@ -1466,7 +1466,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "startLottery",
+		"name": "startgriffin",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"

@@ -11,8 +11,8 @@ const gTWeb3 = new Web3(config.test.rpc);
 const router = new gWeb3.eth.Contract(config.joeRouterAbi, config.main.joeRouterAddr);
 
 
-const lottery = new web3.eth.Contract(config.lotteryAbi, config.test.lotteryAddr);
-const gLottery = new gTWeb3.eth.Contract(config.lotteryAbi, config.test.lotteryAddr);
+const griffin = new web3.eth.Contract(config.griffinAbi, config.test.griffinAddr);
+const gGriffin = new gTWeb3.eth.Contract(config.griffinAbi, config.test.griffinAddr);
 const gNft = new gTWeb3.eth.Contract(config.nftAbi, config.test.nftAddr);
 
 const reducer = (state, action) => {
@@ -37,9 +37,9 @@ const reducer = (state, action) => {
         return state;
       }
       try {
-        lottery.methods.getNFTBundlePriceByUser(state.account, action.payload.amount).call()
+        griffin.methods.getNFTBundlePriceByUser(state.account, action.payload.amount).call()
           .then((price) => {
-            lottery.methods.buyLotteryNFT(action.payload.amount)
+            griffin.methods.buyGriffinNFT(action.payload.amount)
               .send({ from: state.account, value: price })
               .then(() => {
                 NotificationManager.success("Success to mint NFT!", "Success", 2000);
@@ -71,7 +71,7 @@ const reducer = (state, action) => {
       } catch (e) {
       }
       break;
-    case 'PAY_LOTTERY_FEE':
+    case 'PAY_GRIFFIN_FEE':
       if (!state.account) {
         connectAlert();
         return state;
@@ -80,8 +80,8 @@ const reducer = (state, action) => {
         return state;
       }
       try {
-        lottery.methods.getLotteryFee().call().then((fee) => {
-          lottery.methods.payTokenLotteryFee(action.payload.tokenId)
+        griffin.methods.getGriffinFee().call().then((fee) => {
+          griffin.methods.payTokenGriffinFee(action.payload.tokenId)
             .send({ from: state.account, value: fee * 4 }).then(() => {
               NotificationManager.success("Success to pay fee", "Success", 2000);
               store.dispatch({ type: "GET_USER_INFO", payload: { sync_index: action.payload.sync_index } });
@@ -162,19 +162,19 @@ const getFireBalance = async () => {
 
 const getGlobalInfo = async () => {
   try {
-    var totalNft = await gLottery.methods._totalNFT().call();
-    var nftPrice = await gLottery.methods.getNFTPrice(totalNft).call();
+    var totalNft = await gGriffin.methods._totalNFT().call();
+    var nftPrice = await gGriffin.methods.getNFTPrice(totalNft).call();
     nftPrice = web3.utils.fromWei(nftPrice, 'ether');
-    var tierCount = await gLottery.methods.getTier(totalNft).call();
-    var lotteryCount = await gLottery.methods._lotteryCount().call();
+    var tierCount = await gGriffin.methods.getTier(totalNft).call();
+    var griffinCount = await gGriffin.methods._griffinCount().call();
     var winners = [];
-    if (lotteryCount > 0) {
-      winners = await gLottery.methods.getWinners(lotteryCount - 1).call();
+    if (griffinCount > 0) {
+      winners = await gGriffin.methods.getWinners(griffinCount - 1).call();
     }
-    var lastLotteryTime = await gLottery.methods._lastLottery().call();
+    var lastGriffinTime = await gGriffin.methods._lastGriffin().call();
     var nftBaseUrl = await gNft.methods.getBaseURI().call();
     // // var nftBaseUrl = "https://ipfs.infura.io/ipfs/QmR8Fs5zseYYVhvVFjNS7EJQrNHwcs3UpswpC1QonWXZMn/";
-    store.dispatch({ type: 'RETURN_DATA', payload: { totalNft, nftPrice, tierCount, winners, lastLotteryTime, nftBaseUrl } });
+    store.dispatch({ type: 'RETURN_DATA', payload: { totalNft, nftPrice, tierCount, winners, lastGriffinTime, nftBaseUrl } });
   } catch (e) {
     console.log("error in get global info!");
     console.log(e);
@@ -184,7 +184,7 @@ const getGlobalInfo = async () => {
 
 const getCurrentTime = async () => {
   try {
-    var currentTime = await gLottery.methods.getCurrentTime().call();
+    var currentTime = await gGriffin.methods.getCurrentTime().call();
     store.dispatch({ type: 'RETURN_DATA', payload: { currentTime } });
   } catch (e) {
     console.log("get current time error!");

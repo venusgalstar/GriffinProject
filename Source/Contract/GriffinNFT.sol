@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LotteryNFT is ERC721Enumerable, Ownable {
+contract GriffinNFT is ERC721Enumerable, Ownable {
     using Strings for uint256;
     using Counters for Counters.Counter;
 
@@ -30,7 +30,7 @@ contract LotteryNFT is ERC721Enumerable, Ownable {
         _;
     }
 
-    constructor() ERC721("Lottery","LTR") {
+    constructor() ERC721("Griffin","LTR") {
         _baseURIExtended = "https://ipfs.infura.io/";
     }
 

@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import "./LotteryNFT.sol";
+import "./GriffinNFT.sol";
 
-contract Lottery is Ownable {
+contract griffin is Ownable {
     using SafeMath for uint256;
 
     struct CandidateInfo {
@@ -33,15 +33,15 @@ contract Lottery is Ownable {
     event SetMaxOrderCount(address sender, uint256 count);
     event SetNFTPrice(address sender, uint256 newPrice1, uint256 newPrice2, uint256 newPrice3, uint256 newPrice4, uint256 newPrice5);
     event SetContractStatus(address sender, uint256 _newPauseContract);
-    event SetLotteryFee(address sender, uint256 lotteryFee);
+    event SetGriffinFee(address sender, uint256 griffinFee);
     event SetTierCount(address sender, uint256 tier1, uint256 tier2, uint256 tier3, uint256 tier4, uint256 tier5);
     event SetWinnerCountPerTier(address sender, uint256 winner1, uint256 winner2, uint256 winner3, uint256 winner4, uint256 winner5);
 
     event SetTeamWallet(address sender, address wallet);
     event SetWinnerWallet(address sender, address wallet);
     event SetRoyaltyFee(address sender, uint256 winnerFee, uint256 teamFee);
-    event PayAllLotteryFee(address sender, uint256 nCount);
-    event PayTokenLotteryFee(address sender, uint256 tokenId, uint256 nCount);
+    event AllGriffinFee(address sender, uint256 nCount);
+    event TokenGriffinFee(address sender, uint256 tokenId, uint256 nCount);
     event ChangeTier(address sender, uint256 nTier);
     event SetBackendWallet(address sender, address wallet);
     event SetMinRepeatCount(address sender, uint256 minCount);
@@ -54,7 +54,7 @@ contract Lottery is Ownable {
     uint256 pauseContract               = 0;
     uint256 MAX_ORDER_COUNT             = 20;               // maximum nft order count
     uint256 ONE_PERIOD_TIME             = 7 * 86400;        // seconds for one day
-    uint256 ONETIME_LOTTERY_FEE         = 10**16;
+    uint256 ONETIME_GRIFFIN_FEE         = 10**16;
     uint256 _nftPrice                   = 2 * 10**18;       // 2 avax
     uint256 _unit                       = 10**18;
     uint256 _teamRoyalty                = 500;
@@ -64,9 +64,9 @@ contract Lottery is Ownable {
     uint256[2] public _avaxBalance;
     uint256[2] public _walletBalance;
     uint256 public _totalNFT;
-    uint256 public _lotteryRewards;
-    uint256 public _lotteryCount;
-    uint256 public _lastLottery;
+    uint256 public _griffinRewards;
+    uint256 public _griffinCount;
+    uint256 public _lastGriffin;
     uint256[5] _nftPrices;
     uint256[5] _winnerCountPerTier;
     uint256 nounce                      = 0;
@@ -87,12 +87,12 @@ contract Lottery is Ownable {
     address _backendWallet              = 0xDe08d67dcDfFBC9c016af5F3b8011A87d234523d; // backend wallet
     bool[10000] _indices;
     mapping(uint256 => address)[2] _wallets;
-    mapping(uint256 => uint256) _lotteryFee;
+    mapping(uint256 => uint256) _griffinFee;
     mapping(uint256 => uint256) _winnerCount;
     mapping(uint256 => uint256) _createTime;
     mapping(uint256 => mapping(uint256 =>WinnerInfo)) _winners;
 
-    LotteryNFT                  _lotteryNFT;
+    GriffinNFT                  _griffinNFT;
 
     /**
     * @dev Throws if called by any account other than the multi-signer.
@@ -126,11 +126,11 @@ contract Lottery is Ownable {
         emit Fallback(msg.sender, msg.value);
     }
 
-    constructor(address lotteryNFTAddress) {
-        _lotteryNFT = LotteryNFT(lotteryNFTAddress);
+    constructor(address griffinNFTAddress) {
+        _griffinNFT = GriffinNFT(griffinNFTAddress);
 
         setNFTPrice(_nftPrice, _nftPrice + 5*10**17, _nftPrice + 10*10**17, _nftPrice + 15*10**17, _nftPrice + 20*10**17);
-        _totalNFT = _lotteryNFT.totalSupply();
+        _totalNFT = _griffinNFT.totalSupply();
         setTierCount(2000, 4000, 6000, 8000, 10000);
         setWinnerCountPerTier(5, 10, 15, 20, 25);
         //test ----
@@ -171,7 +171,7 @@ contract Lottery is Ownable {
         return nftPrice;
     }
 
-    function buyLotteryNFT(uint256 nCount) external payable {
+    function buyGriffinNFT(uint256 nCount) external payable {
         // uint256 nftPrice = getNFTBundlePrice(nCount);
         uint256 wCount = getPresailCountByUser(msg.sender, nCount);
 
@@ -207,7 +207,7 @@ contract Lottery is Ownable {
         uint256 tokenId;
         // mint nCount NFT
         for(uint256 i=0; i<nCount; i++) {
-            tokenId = _lotteryNFT.mint(msg.sender, randomIndex());
+            tokenId = _griffinNFT.mint(msg.sender, randomIndex());
             _createTime[tokenId] = block.timestamp;
         }
         if(_totalNFT + nCount >= _tierCount[_nextTierLevel]) {
@@ -227,68 +227,68 @@ contract Lottery is Ownable {
     }
 
     function getAllNFT(address owner) external view returns(NFTInfo[] memory) {
-        uint256 ct = _lotteryNFT.balanceOf(owner);
+        uint256 ct = _griffinNFT.balanceOf(owner);
         NFTInfo[] memory res = new NFTInfo[](ct);
         for(uint256 i=0; i<ct; i++) {
-            res[i].tokenId = _lotteryNFT.tokenOfOwnerByIndex(owner, i);
+            res[i].tokenId = _griffinNFT.tokenOfOwnerByIndex(owner, i);
             res[i].createTime = _createTime[res[i].tokenId];
         }
         return res;
     }
 
-    function payAllLotteryFee() external payable {
-        uint256 nftCount = _lotteryNFT.balanceOf(msg.sender);
-        require(msg.value >= ONETIME_LOTTERY_FEE * nftCount, "insufficient lottery fee");
-        uint256 nCount = msg.value / ONETIME_LOTTERY_FEE / nftCount;
+    function payAllGriffinFee() external payable {
+        uint256 nftCount = _griffinNFT.balanceOf(msg.sender);
+        require(msg.value >= ONETIME_GRIFFIN_FEE * nftCount, "insufficient griffin fee");
+        uint256 nCount = msg.value / ONETIME_GRIFFIN_FEE / nftCount;
         require(nCount >= _minRepeatCount, "lower than mininum repeat count");
         uint256 tokenId;
         for(uint8 i=0; i<nftCount; i++) {
-            tokenId = _lotteryNFT.tokenOfOwnerByIndex(msg.sender, i);
-            if(_lotteryFee[tokenId] < _lotteryCount) {
-                _lotteryFee[tokenId] = _lotteryCount;
+            tokenId = _griffinNFT.tokenOfOwnerByIndex(msg.sender, i);
+            if(_griffinFee[tokenId] < _griffinCount) {
+                _griffinFee[tokenId] = _griffinCount;
             }
-            _lotteryFee[tokenId] += nCount;
+            _griffinFee[tokenId] += nCount;
         }
-        emit PayAllLotteryFee(msg.sender, nCount);
+        emit AllGriffinFee(msg.sender, nCount);
     }
 
-    function payTokenLotteryFee(uint256 tokenId) external payable {
-        require(msg.value >= ONETIME_LOTTERY_FEE, "insufficient lottery fee");
-        require(_lotteryNFT.ownerOf(tokenId) == msg.sender, "have no token id");
-        uint256 nCount = msg.value / ONETIME_LOTTERY_FEE;
+    function payTokenGriffinFee(uint256 tokenId) external payable {
+        require(msg.value >= ONETIME_GRIFFIN_FEE, "insufficient griffin fee");
+        require(_griffinNFT.ownerOf(tokenId) == msg.sender, "have no token id");
+        uint256 nCount = msg.value / ONETIME_GRIFFIN_FEE;
         require(nCount >= _minRepeatCount, "lower than mininum repeat count");
-        if(_lotteryFee[tokenId] < _lotteryCount) {
-            _lotteryFee[tokenId] = _lotteryCount;
+        if(_griffinFee[tokenId] < _griffinCount) {
+            _griffinFee[tokenId] = _griffinCount;
         }
-        _lotteryFee[tokenId] += nCount;
-        emit PayTokenLotteryFee(msg.sender, tokenId, nCount);
+        _griffinFee[tokenId] += nCount;
+        emit TokenGriffinFee(msg.sender, tokenId, nCount);
     }
 
-    function startLottery() external payable onlyBackendWallet disablePause{
-        require(block.timestamp - _lastLottery >= ONE_PERIOD_TIME, "insufficient lottery period");
+    function startgriffin() external payable onlyBackendWallet disablePause{
+        require(block.timestamp - _lastGriffin >= ONE_PERIOD_TIME, "insufficient griffin period");
         
-        //increase lottery count;
-        _lotteryCount++;
-        //update last lottery time;
-        _lastLottery = block.timestamp;
+        //increase griffin count;
+        _griffinCount++;
+        //update last griffin time;
+        _lastGriffin = block.timestamp;
     }
 
-    function getWinners(uint256 lotteryIndex) external view returns(WinnerInfo[] memory winners){
-        winners = new WinnerInfo[](_winnerCount[lotteryIndex]);
-        for(uint256 i=0; i<_winnerCount[lotteryIndex]; i++) {
-            winners[i] = _winners[lotteryIndex][i];
+    function getWinners(uint256 griffinIndex) external view returns(WinnerInfo[] memory winners){
+        winners = new WinnerInfo[](_winnerCount[griffinIndex]);
+        for(uint256 i=0; i<_winnerCount[griffinIndex]; i++) {
+            winners[i] = _winners[griffinIndex][i];
         }
         return winners;
     }
 
-    function setWinners(uint256 lotteryIndex, WinnerInfo[] memory winners) external onlyBackendWallet{
-        require(lotteryIndex < _lotteryCount, "invalid lottery index");
-        require(_winnerCount[lotteryIndex] == 0, "already set");
+    function setWinners(uint256 griffinIndex, WinnerInfo[] memory winners) external onlyBackendWallet{
+        require(griffinIndex < _griffinCount, "invalid griffin index");
+        require(_winnerCount[griffinIndex] == 0, "already set");
         require(winners.length <= _winnerCountPerTier[getTier(_totalNFT)-1], "invalid winner count");
         for(uint256 i=0; i<winners.length; i++) {
-            _winners[lotteryIndex][i] = winners[i];
+            _winners[griffinIndex][i] = winners[i];
         }
-        _winnerCount[lotteryIndex] = winners.length;
+        _winnerCount[griffinIndex] = winners.length;
     }
 
     function randomIndex() internal  returns (uint) 
@@ -336,10 +336,10 @@ contract Lottery is Ownable {
         }
         CandidateInfo[] memory candidates = new CandidateInfo[](nCount);
         for(uint256 i = 0; i < nCount; i++) {
-            candidates[i].tokenId = _lotteryNFT.tokenByIndex(nStart + i);
-            candidates[i].user = _lotteryNFT.ownerOf(candidates[i].tokenId);
-            if(_lotteryFee[candidates[i].tokenId] > _lotteryCount) {
-                candidates[i].remainCount = _lotteryFee[candidates[i].tokenId] - _lotteryCount;
+            candidates[i].tokenId = _griffinNFT.tokenByIndex(nStart + i);
+            candidates[i].user = _griffinNFT.ownerOf(candidates[i].tokenId);
+            if(_griffinFee[candidates[i].tokenId] > _griffinCount) {
+                candidates[i].remainCount = _griffinFee[candidates[i].tokenId] - _griffinCount;
             }
         }
         return candidates;
@@ -398,13 +398,13 @@ contract Lottery is Ownable {
         emit SetNFTPrice(msg.sender, newPrice1, newPrice2, newPrice3, newPrice4, newPrice5);
     }
 
-    function getLotteryFee() external view returns(uint256) {
-        return ONETIME_LOTTERY_FEE;
+    function getGriffinFee() external view returns(uint256) {
+        return ONETIME_GRIFFIN_FEE;
     }
 
-    function setLotteryFee(uint256 lotteryFee) external onlyMultiSignWallet disablePause{
-        ONETIME_LOTTERY_FEE = lotteryFee;
-        emit SetLotteryFee(msg.sender, lotteryFee);
+    function setGriffinFee(uint256 griffinFee) external onlyMultiSignWallet disablePause{
+        ONETIME_GRIFFIN_FEE = griffinFee;
+        emit SetGriffinFee(msg.sender, griffinFee);
     }
 
     function getPeriodTime() external view returns(uint256) {

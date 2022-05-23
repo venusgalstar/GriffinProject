@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 100411
  Source Host           : 127.0.0.1:3306
- Source Schema         : lottery
+ Source Schema         : griffin
 
  Target Server Type    : MySQL
  Target Server Version : 100411
  File Encoding         : 65001
 
- Date: 21/04/2022 23:57:20
+ Date: 24/05/2022 04:24:48
 */
 
 SET NAMES utf8mb4;
@@ -37,7 +37,7 @@ CREATE TABLE `first_start`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `first_start` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for nfts
@@ -51,7 +51,7 @@ CREATE TABLE `nfts`  (
   `winnings` int NULL DEFAULT 0 COMMENT 'winning count',
   `sync_index` int NULL DEFAULT NULL COMMENT 'sync index from contract',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 372 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 426 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for winners
@@ -61,8 +61,8 @@ CREATE TABLE `winners`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `winner_ids` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'winner nft ids seperated with (,)',
   `attend_ids` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'attend nft ids seperated with (,)',
-  `lottery_count` int NULL DEFAULT NULL COMMENT 'lottery count',
-  `date` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'lottery time',
+  `griffin_count` int NULL DEFAULT NULL COMMENT 'griffin count',
+  `date` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'time',
   `winner_string` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 118 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;

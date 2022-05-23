@@ -35,7 +35,7 @@ export default function Otherpage() {
 
 
   const payFee = (tokenId, sync_index) => {
-    dispatch({ type: 'PAY_LOTTERY_FEE', payload: { tokenId: tokenId, sync_index: sync_index } });
+    dispatch({ type: 'PAY_GRIFFIN_FEE', payload: { tokenId: tokenId, sync_index: sync_index } });
   };
 
   const getImgUrl = async (tokenId) => {
