@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-
+import "../../phoenixv3/RewardManagementV3.sol";
 import "./GriffinNFT.sol";
 
-contract griffin is Ownable {
+contract Griffin is Ownable {
     using SafeMath for uint256;
 
     struct CandidateInfo {
@@ -39,6 +39,7 @@ contract griffin is Ownable {
 
     event SetTeamWallet(address sender, address wallet);
     event SetWinnerWallet(address sender, address wallet);
+    event SetMaintenanceWallet(address sender, address wallet);
     event SetRoyaltyFee(address sender, uint256 winnerFee, uint256 teamFee);
     event AllGriffinFee(address sender, uint256 nCount);
     event TokenGriffinFee(address sender, uint256 tokenId, uint256 nCount);
@@ -54,13 +55,13 @@ contract griffin is Ownable {
     uint256 pauseContract               = 0;
     uint256 MAX_ORDER_COUNT             = 20;               // maximum nft order count
     uint256 ONE_PERIOD_TIME             = 7 * 86400;        // seconds for one day
-    uint256 ONETIME_GRIFFIN_FEE         = 10**16;
-    uint256 _nftPrice                   = 2 * 10**18;       // 2 avax
+    uint256 ONETIME_GRIFFIN_FEE         = 25 * 10**15;
+    uint256 _nftPrice;
     uint256 _unit                       = 10**18;
     uint256 _teamRoyalty                = 500;
     uint256 _winnerRoyalty              = 500;
-    uint256 public _nextTierLevel              = 0;
     uint256 _minRepeatCount             = 4;
+    uint256 public _nextTierLevel       = 0;
     uint256[2] public _avaxBalance;
     uint256[2] public _walletBalance;
     uint256 public _totalNFT;
@@ -84,6 +85,7 @@ contract griffin is Ownable {
 
     address _teamWallet                 = 0x697A32dB1BDEF9152F445b06d6A9Fd6E90c02E3e; // team wallet
     address _winnerWallet               = 0x697A32dB1BDEF9152F445b06d6A9Fd6E90c02E3e; // winner wallet
+    address payable _maintenanceWallet  = payable(0x697A32dB1BDEF9152F445b06d6A9Fd6E90c02E3e); // winner wallet
     address _backendWallet              = 0xDe08d67dcDfFBC9c016af5F3b8011A87d234523d; // backend wallet
     bool[10000] _indices;
     mapping(uint256 => address)[2] _wallets;
@@ -93,6 +95,7 @@ contract griffin is Ownable {
     mapping(uint256 => mapping(uint256 =>WinnerInfo)) _winners;
 
     GriffinNFT                  _griffinNFT;
+    RewardManagementV3          _rewardManagement;
 
     /**
     * @dev Throws if called by any account other than the multi-signer.
@@ -126,27 +129,27 @@ contract griffin is Ownable {
         emit Fallback(msg.sender, msg.value);
     }
 
-    constructor(address griffinNFTAddress) {
+    constructor(address griffinNFTAddress, address payable rewardManagementV3Address) {
         _griffinNFT = GriffinNFT(griffinNFTAddress);
+        _rewardManagement = RewardManagementV3(rewardManagementV3Address);
 
-        setNFTPrice(_nftPrice, _nftPrice + 5*10**17, _nftPrice + 10*10**17, _nftPrice + 15*10**17, _nftPrice + 20*10**17);
         _totalNFT = _griffinNFT.totalSupply();
         setTierCount(2000, 4000, 6000, 8000, 10000);
         setWinnerCountPerTier(5, 10, 15, 20, 25);
+        setNFTPrice(3*10**18, 4*10**18, 5*10**18, 6*10**18, 7*10**18);
         //test ----
-        setNFTPrice(10**15, 10**15 + 5*10**16, 10**15 + 10*10**16, 10**15 + 15*10**16, 10**15 + 20*10**16);
-        ONE_PERIOD_TIME = 300;
-        setTierCount(12, 24, 36, 48, 60);
+        // ONE_PERIOD_TIME = 300;
+        // setTierCount(12, 24, 36, 48, 60);
     }
 
     function min(uint256 a, uint256 b) internal pure returns(uint256) {
         return a > b ? b : a;
     }
 
-    function getPresailCountByUser(address user, uint256 nCount) internal view returns(uint256) {
+    function getPresaleCountByUser(address user, uint256 nCount) internal view returns(uint256) {
         if (getTier(_totalNFT) == 1) {
             uint256 wCount = 0;
-            if ((_whiteList[user] || IERC721(_fireBird).balanceOf(user) > 0) && _whiteListCount[user] <= _whiteListLimit) {
+            if ((_whiteList[user] || IERC721(_fireBird).balanceOf(user) > 0 || _rewardManagement.getNodeList(user).length > 0) && _whiteListCount[user] <= _whiteListLimit) {
                 wCount = min(_whiteListLimit - _whiteListCount[user], nCount);
             }
             return wCount;
@@ -156,7 +159,7 @@ contract griffin is Ownable {
     }
 
     function getNFTBundlePriceByUser(address user, uint256 nCount ) public view returns(uint256) {
-        uint256 wCount = getPresailCountByUser(user, nCount);
+        uint256 wCount = getPresaleCountByUser(user, nCount);
         return wCount * _whiteListPrice + getNFTBundlePrice(nCount - wCount);
     }
 
@@ -173,7 +176,7 @@ contract griffin is Ownable {
 
     function buyGriffinNFT(uint256 nCount) external payable {
         // uint256 nftPrice = getNFTBundlePrice(nCount);
-        uint256 wCount = getPresailCountByUser(msg.sender, nCount);
+        uint256 wCount = getPresaleCountByUser(msg.sender, nCount);
 
         if (getTier(_totalNFT) == 1) {
             require(_whiteList[msg.sender], "not a whitelist member");
@@ -215,7 +218,7 @@ contract griffin is Ownable {
         }
         _totalNFT += nCount;
         if (_whiteList[msg.sender]) {
-            _whiteListCount[msg.sender] += getPresailCountByUser(msg.sender, nCount);
+            _whiteListCount[msg.sender] += getPresaleCountByUser(msg.sender, nCount);
         }
         _buyHistory[msg.sender] += nCount;
         emit BuyNFT(msg.sender, nCount);
@@ -249,6 +252,8 @@ contract griffin is Ownable {
             }
             _griffinFee[tokenId] += nCount;
         }
+        // send all to _maintenanceWallet
+        payable(_maintenanceWallet).transfer(msg.value);
         emit AllGriffinFee(msg.sender, nCount);
     }
 
@@ -256,11 +261,13 @@ contract griffin is Ownable {
         require(msg.value >= ONETIME_GRIFFIN_FEE, "insufficient griffin fee");
         require(_griffinNFT.ownerOf(tokenId) == msg.sender, "have no token id");
         uint256 nCount = msg.value / ONETIME_GRIFFIN_FEE;
-        require(nCount >= _minRepeatCount, "lower than mininum repeat count");
+        require(nCount >= _minRepeatCount, "lower than minimum repeat count");
         if(_griffinFee[tokenId] < _griffinCount) {
             _griffinFee[tokenId] = _griffinCount;
         }
         _griffinFee[tokenId] += nCount;
+        // send all to _maintenanceWallet
+        payable(_maintenanceWallet).transfer(msg.value);
         emit TokenGriffinFee(msg.sender, tokenId, nCount);
     }
 
@@ -433,7 +440,7 @@ contract griffin is Ownable {
         return _teamWallet;
     }
 
-    function setTeamWallet(address team) external onlyMultiSignWallet disablePause{
+    function setTeamWallet(address team) external onlyMultiSignWallet{
         _teamWallet = team;
         emit SetTeamWallet(msg.sender, team);
     }
@@ -442,10 +449,19 @@ contract griffin is Ownable {
         return _winnerWallet;
     }
 
-    function setWinnerWallet(address addr) external onlyMultiSignWallet disablePause{
+    function setWinnerWallet(address addr) external onlyMultiSignWallet{
         _winnerWallet = addr;
         emit SetWinnerWallet(msg.sender, addr);
     }
+
+    function getMaintenanceWallet() external view returns(address) {
+        return _maintenanceWallet;
+    }
+
+    function setMaintenanceWallet(address payable addr) external onlyMultiSignWallet{
+        _maintenanceWallet = addr;
+        emit SetMaintenanceWallet(msg.sender, addr);
+    }    
 
     function getMaxOrderCount() external view returns(uint256) {
         return MAX_ORDER_COUNT;
